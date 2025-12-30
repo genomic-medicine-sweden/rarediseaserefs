@@ -180,6 +180,13 @@ workflow PIPELINE_COMPLETION {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 //
+// Initialize skip parameters
+//
+def parseSkipList(paramValue, toolName) {
+    return paramValue ? paramValue.split(',').contains(toolName) : false
+}
+
+//
 // Check and validate pipeline parameters
 //
 def validateInputParameters() {

@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -79,6 +79,28 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "default": "s3://ngi-igenomes/igenomes/"
+                }
+            }
+        },
+        "download_options": {
+            "title": "Download options",
+            "type": "object",
+            "fa_icon": "fas fa-user-cog",
+            "description": "Options used to facilitate the annotation of the variants.",
+            "properties": {
+                "gnomad_version_snv": {
+                    "type": "string",
+                    "default": "4.1",
+                    "description": "Specify the version of the gnomAD database to download.",
+                    "enum": ["4.0", "4.1"],
+                    "fa_icon": "fas fa-align-center"
+                },
+                "skip_downloads": {
+                    "type": "string",
+                    "fa_icon": "fas fa-forward",
+                    "description": "Disable specified downloads.",
+                    "help_text": "Multiple downloads can be disabled, separated by commas.",
+                    "pattern": "^((gnomad_nuclear_snv)?,?)*(?<!,)$"
                 }
             }
         },
@@ -246,6 +268,9 @@
         },
         {
             "$ref": "#/$defs/reference_genome_options"
+        },
+        {
+            "$ref": "#/$defs/download_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

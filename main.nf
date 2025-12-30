@@ -15,21 +15,16 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RAREDISEASEREFS  } from './workflows/rarediseaserefs'
+include { RAREDISEASEREFS         } from './workflows/rarediseaserefs'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
-
+include { parseSkipList           } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     GENOME PARAMETER VALUES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,11 +45,16 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
+    skip_gnomad_nuclear_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
+
     RAREDISEASEREFS (
-        samplesheet
+        skip_gnomad_nuclear_snv,
+        params.gnomad_version_snv
     )
+
     emit:
-    multiqc_report = RAREDISEASEREFS.out.multiqc_report // channel: /path/to/multiqc_report.html
+    gnomad_nuclear_snv = RAREDISEASEREFS.out.gnomad_nuclear_snv
+    multiqc_report     = RAREDISEASEREFS.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,6 +98,9 @@ workflow {
         params.hook_url,
         NFCORE_RAREDISEASEREFS.out.multiqc_report
     )
+
+    publish:
+    gnomad_nuclear_snv = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_snv
 }
 
 /*
@@ -105,3 +108,9 @@ workflow {
     THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+output {
+    gnomad_nuclear_snv {
+        path 'gnomad'
+    }
+}
