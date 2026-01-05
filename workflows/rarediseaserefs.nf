@@ -59,9 +59,9 @@ workflow RAREDISEASEREFS {
 
 
     emit:
-    multiqc_report     = channel.empty()
     gnomad_nuclear_snv = ch_gnomad_nuclear_snv
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    multiqc_report     = channel.empty()
+    versions           = ch_versions                 // channel: [ path(versions.yml) ]
 
 }
 

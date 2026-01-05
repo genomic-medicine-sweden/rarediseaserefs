@@ -17,7 +17,7 @@ process DOWNLOADGNOMADSNV {
     task.ext.when == null || task.ext.when
 
     script:
-    meta = [id: "gnomad_snv"]
+    meta = [id: "gnomad_${version}_snv"]
     """
     for i in {1..22} X Y; do
         wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/vcf/genomes/gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz
@@ -36,7 +36,7 @@ process DOWNLOADGNOMADSNV {
     """
 
     stub:
-    meta = [id: "gnomad_snv"]
+    meta = [id: "gnomad_${version}_snv"]
     """
     for i in {1..22} X Y; do
         echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/vcf/genomes/gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz >>commands
