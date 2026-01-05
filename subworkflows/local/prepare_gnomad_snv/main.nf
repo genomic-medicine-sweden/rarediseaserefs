@@ -1,7 +1,7 @@
-include {DOWNLOADGNOMADSNV } from '../../../modules/local/download_gnomad_snv'
-include {BCFTOOLS_MERGE    } from '../../../modules/nf-core/bcftools/merge'
-include {BCFTOOLS_QUERY    } from '../../../modules/nf-core/bcftools/query/main'
-include { TABIX_BGZIPTABIX } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { DOWNLOADGNOMADSNV } from '../../../modules/local/download_gnomad_snv'
+include { BCFTOOLS_MERGE    } from '../../../modules/nf-core/bcftools/merge'
+include { BCFTOOLS_QUERY    } from '../../../modules/nf-core/bcftools/query/main'
+include { TABIX_BGZIPTABIX  } from '../../../modules/nf-core/tabix/bgziptabix/main'
 
 workflow PREPARE_GNOMAD_SNV {
     take:
