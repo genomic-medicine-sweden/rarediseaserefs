@@ -26,7 +26,7 @@ process DOWNLOADGNOMADSNV {
             --output-type z \\
             --write-index=tbi \\
             --threads ${task.cpus-1} \\
-            --output grch38_gnomad_reformatted_-r${version}.sites.chr\${i}.vcf.gz \\
+            --output gnomad_reformatted.genomes.v${version}.sites.chr\${i}.vcf.gz \\
             --include "FILTER='PASS'" \\
             --remove "^INFO/AF,INFO/AF_grpmax" \\
             gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz
@@ -45,13 +45,13 @@ process DOWNLOADGNOMADSNV {
             --output-type z \\
             --write-index=tbi \\
             --threads ${task.cpus-1} \\
-            --output grch38_gnomad_reformatted_-r${version}.sites.chr\${i}.vcf.gz \\
+            --output gnomad_reformatted.genomes.v${version}.sites.chr\${i}.vcf.gz \\
             --include \\"FILTER=\\'PASS\\'\\" \\
             --remove \\"^INFO/AF,INFO/AF_grpmax\\" \\
             gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz >>commands
 
-        touch grch38_gnomad_reformatted_-r${version}.sites.chr\${i}.vcf.gz
-        touch grch38_gnomad_reformatted_-r${version}.sites.chr\${i}.vcf.gz.tbi
+        touch gnomad_reformatted_.genomes.v${version}.sites.chr\${i}.vcf.gz
+        touch --output gnomad_reformatted_.genomes.v${version}.sites.chr\${i}.vcf.gz
     done
     """
 

@@ -25,7 +25,7 @@ process DOWNLOADGNOMADSV {
         --output-type z \\
         --write-index=tbi \\
         --threads ${task.cpus-1} \\
-        --output gnomad_reformatted.r${version}.sv.sites.vcf.gz \\
+        --output gnomad_reformatted.v${version}.sv.sites.vcf.gz \\
         --include "FILTER='PASS'" \\
         --remove "^INFO/AF,INFO/AC" \\
         gnomad.v${version}.sv.sites.vcf.gz

@@ -88,6 +88,13 @@
             "fa_icon": "fas fa-user-cog",
             "description": "Options used to facilitate the annotation of the variants.",
             "properties": {
+                "gnomad_version_mt": {
+                    "type": "string",
+                    "default": "3.1",
+                    "description": "Specify the version of the gnomAD database to download.",
+                    "enum": ["3.1"],
+                    "fa_icon": "fas fa-align-center"
+                },
                 "gnomad_version_snv": {
                     "type": "string",
                     "default": "4.1",
@@ -107,7 +114,7 @@
                     "fa_icon": "fas fa-forward",
                     "description": "Disable specified downloads.",
                     "help_text": "Multiple downloads can be disabled, separated by commas.",
-                    "pattern": "^((gnomad_nuclear_snv|gnomad_nuclear_sv)?,?)*(?<!,)$"
+                    "pattern": "^((gnomad_nuclear_snv|gnomad_nuclear_sv|gnomad_mt)?,?)*(?<!,)$"
                 }
             }
         },

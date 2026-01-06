@@ -45,17 +45,21 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
+    skip_gnomad_mt          = parseSkipList(params.skip_downloads, 'gnomad_mt')
     skip_gnomad_nuclear_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
     skip_gnomad_nuclear_sv  = parseSkipList(params.skip_downloads, 'gnomad_nuclear_sv')
 
     RAREDISEASEREFS (
+        skip_gnomad_mt,
         skip_gnomad_nuclear_snv,
         skip_gnomad_nuclear_sv,
+        params.gnomad_version_mt,
         params.gnomad_version_snv,
         params.gnomad_version_sv
     )
 
     emit:
+    gnomad_mt          = RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = RAREDISEASEREFS.out.gnomad_nuclear_snv
     gnomad_nuclear_sv  = RAREDISEASEREFS.out.gnomad_nuclear_sv
     multiqc_report     = RAREDISEASEREFS.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -104,6 +108,7 @@ workflow {
     )
 
     publish:
+    gnomad_mt          = NFCORE_RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_snv
     gnomad_nuclear_sv  = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_sv
 }
@@ -115,6 +120,9 @@ workflow {
 */
 
 output {
+    gnomad_mt {
+        path 'gnomad'
+    }
     gnomad_nuclear_snv {
         path 'gnomad'
     }
