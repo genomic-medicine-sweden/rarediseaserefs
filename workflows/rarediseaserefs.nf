@@ -8,6 +8,7 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
+include { PREPARE_GNOMAD_SV      } from '../subworkflows/local/prepare_gnomad_sv'
 
 include { DOWNLOADCLINVARSNV     } from '../modules/local/download_clinvar_snv'
 include { DOWNLOADGNOMADMT       } from '../modules/local/download_gnomad_mt'
@@ -46,7 +47,7 @@ workflow RAREDISEASEREFS {
         ch_gnomad_nuclear_snv = PREPARE_GNOMAD_SNV(val_gnomad_version_snv).gnomad_snv
     }
     if (!skip_gnomad_nuclear_sv) {
-        ch_gnomad_nuclear_sv  = DOWNLOADGNOMADSV(val_gnomad_version_sv).vcf_tbi
+        ch_gnomad_nuclear_sv  = PREPARE_GNOMAD_SV(val_gnomad_version_sv).gnomad_sv
     }
     if (!skip_gnomad_mt) {
         ch_gnomad_mt          = DOWNLOADGNOMADMT(val_gnomad_mt).vcf_tbi

@@ -11,46 +11,23 @@ process DOWNLOADGNOMADSV {
     val(version)
 
     output:
-    tuple val(meta), path("*.vcf.gz"), path("*.vcf.gz.tbi"), emit: vcf_tbi
+    tuple val(meta), path("*.vcf.gz"), emit: vcf
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    meta = [id: "gnomad_${version}_sv"]
+    meta = [id: "${version}"]
     """
     wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/genome_sv/gnomad.v${version}.sv.sites.vcf.gz
-
-    bcftools annotate \\
-        --output-type z \\
-        --write-index=tbi \\
-        --threads ${task.cpus-1} \\
-        --output gnomad_reformatted.v${version}.sv.sites.vcf.gz \\
-        --include "FILTER='PASS'" \\
-        --remove "^INFO/AF,INFO/AC" \\
-        gnomad.v${version}.sv.sites.vcf.gz
-
-    rm gnomad.v${version}.sv.sites.vcf.gz
     """
 
     stub:
     meta = [id: "gnomad_${version}_sv"]
     """
-    for i in X Y; do
-        echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/genome_sv/gnomad.v${version}.sv.sites.vcf.gz >>commands
+    echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/genome_sv/gnomad.v${version}.sv.sites.vcf.gz >>commands
 
-        echo bcftools annotate \\
-            --output-type z \\
-            --write-index=tbi \\
-            --threads ${task.cpus-1} \\
-            --output gnomad_reformatted.r${version}.sv.sites.vcf.gz \\
-            --include \\"FILTER=\\'PASS\\'\\" \\
-            --remove \\"^INFO/AF,INFO/AC\\" \\
-            gnomad.v${version}.sv.sites.vcf.gz >>commands
-
-        touch gnomad_reformatted.r${version}.sv.sites.vcf.gz
-        touch gnomad_reformatted.r${version}.sv.sites.vcf.gz.tbi
-    done
+    touch gnomad.r${version}.sv.sites.vcf.gz
     """
 
 }
