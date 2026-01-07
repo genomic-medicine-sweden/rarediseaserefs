@@ -45,20 +45,24 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
+    skip_clinvar_snv        = parseSkipList(params.skip_downloads, 'clinvar_snv')
     skip_gnomad_mt          = parseSkipList(params.skip_downloads, 'gnomad_mt')
     skip_gnomad_nuclear_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
     skip_gnomad_nuclear_sv  = parseSkipList(params.skip_downloads, 'gnomad_nuclear_sv')
 
     RAREDISEASEREFS (
+        skip_clinvar_snv,
         skip_gnomad_mt,
         skip_gnomad_nuclear_snv,
         skip_gnomad_nuclear_sv,
+        params.clinvar_version_snv,
         params.gnomad_version_mt,
         params.gnomad_version_snv,
         params.gnomad_version_sv
     )
 
     emit:
+    clinvar_snv        = RAREDISEASEREFS.out.clinvar_snv
     gnomad_mt          = RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = RAREDISEASEREFS.out.gnomad_nuclear_snv
     gnomad_nuclear_sv  = RAREDISEASEREFS.out.gnomad_nuclear_sv
@@ -108,6 +112,7 @@ workflow {
     )
 
     publish:
+    clinvar_snv        = NFCORE_RAREDISEASEREFS.out.clinvar_snv
     gnomad_mt          = NFCORE_RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_snv
     gnomad_nuclear_sv  = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_sv
@@ -120,6 +125,9 @@ workflow {
 */
 
 output {
+    clinvar_snv {
+        path 'clinvar'
+    }
     gnomad_mt {
         path 'gnomad'
     }

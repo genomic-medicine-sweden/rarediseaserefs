@@ -9,6 +9,7 @@ include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pi
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
 
+include { DOWNLOADCLINVARSNV     } from '../modules/local/download_clinvar_snv'
 include { DOWNLOADGNOMADMT       } from '../modules/local/download_gnomad_mt'
 include { DOWNLOADGNOMADSV       } from '../modules/local/download_gnomad_sv'
 
@@ -21,9 +22,11 @@ include { DOWNLOADGNOMADSV       } from '../modules/local/download_gnomad_sv'
 workflow RAREDISEASEREFS {
 
     take:
+    skip_clinvar_snv
     skip_gnomad_mt
     skip_gnomad_nuclear_snv
     skip_gnomad_nuclear_sv
+    val_clinvar_snv
     val_gnomad_mt
     val_gnomad_version_snv      
     val_gnomad_version_sv      
@@ -31,18 +34,22 @@ workflow RAREDISEASEREFS {
     main:
 
     ch_versions           = channel.empty()
+    ch_clinvar_snv        = channel.empty()
     ch_gnomad_mt          = channel.empty()
     ch_gnomad_nuclear_snv = channel.empty()
     ch_gnomad_nuclear_sv  = channel.empty()
 
+    if (!skip_clinvar_snv) {
+        ch_clinvar_snv        = DOWNLOADCLINVARSNV(val_clinvar_snv).vcf_tbi
+    }
     if (!skip_gnomad_nuclear_snv) {
         ch_gnomad_nuclear_snv = PREPARE_GNOMAD_SNV(val_gnomad_version_snv).gnomad_snv
     }
     if (!skip_gnomad_nuclear_sv) {
-        ch_gnomad_nuclear_sv = DOWNLOADGNOMADSV(val_gnomad_version_sv).vcf_tbi
+        ch_gnomad_nuclear_sv  = DOWNLOADGNOMADSV(val_gnomad_version_sv).vcf_tbi
     }
     if (!skip_gnomad_mt) {
-        ch_gnomad_mt         = DOWNLOADGNOMADMT(val_gnomad_mt).vcf_tbi
+        ch_gnomad_mt          = DOWNLOADGNOMADMT(val_gnomad_mt).vcf_tbi
     }
     //
     // Collate and save software versions
@@ -75,6 +82,7 @@ workflow RAREDISEASEREFS {
 
 
     emit:
+    clinvar_snv        = ch_clinvar_snv
     gnomad_mt          = ch_gnomad_mt
     gnomad_nuclear_snv = ch_gnomad_nuclear_snv
     gnomad_nuclear_sv  = ch_gnomad_nuclear_sv
