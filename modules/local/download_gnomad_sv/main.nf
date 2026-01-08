@@ -1,5 +1,5 @@
 process DOWNLOADGNOMADSV {
-    tag "gnomad_sv"
+    tag "${meta.id}"
     label 'process_very_long'
 
     conda "${moduleDir}/environment.yml"
