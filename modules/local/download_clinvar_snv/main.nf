@@ -1,5 +1,5 @@
 process DOWNLOADCLINVARSNV {
-    tag "clinvar_snv"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
