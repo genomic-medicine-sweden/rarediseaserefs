@@ -8,7 +8,7 @@ process DOWNLOADGNOMADSV {
         'community.wave.seqera.io/library/bcftools_wget:3777c03593ee7853' }"
 
     input:
-    val(version)
+    val(meta)
 
     output:
     tuple val(meta), path("*.vcf.gz"), emit: vcf
@@ -17,17 +17,15 @@ process DOWNLOADGNOMADSV {
     task.ext.when == null || task.ext.when
 
     script:
-    meta = [id: "${version}"]
     """
-    wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/genome_sv/gnomad.v${version}.sv.sites.vcf.gz
+    wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/genome_sv/gnomad.v${meta.version}.sv.sites.vcf.gz
     """
 
     stub:
-    meta = [id: "gnomad_${version}_sv"]
     """
-    echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/genome_sv/gnomad.v${version}.sv.sites.vcf.gz >>commands
+    echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/genome_sv/gnomad.v${meta.version}.sv.sites.vcf.gz >>commands
 
-    touch gnomad.r${version}.sv.sites.vcf.gz
+    touch gnomad.v${meta.version}.sv.sites.vcf.gz
     """
 
 }

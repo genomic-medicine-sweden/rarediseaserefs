@@ -7,12 +7,11 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
+include { PREPARE_CLINVAR_SNV    } from '../subworkflows/local/prepare_clinvar_snv'
 include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
 include { PREPARE_GNOMAD_SV      } from '../subworkflows/local/prepare_gnomad_sv'
 
-include { DOWNLOADCLINVARSNV     } from '../modules/local/download_clinvar_snv'
 include { DOWNLOADGNOMADMT       } from '../modules/local/download_gnomad_mt'
-include { DOWNLOADGNOMADSV       } from '../modules/local/download_gnomad_sv'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,34 +22,35 @@ include { DOWNLOADGNOMADSV       } from '../modules/local/download_gnomad_sv'
 workflow RAREDISEASEREFS {
 
     take:
+    ch_clnvid_header
+    ch_clinvar_snv
+    ch_gnomad_mt_snv
+    ch_gnomad_nc_snv
+    ch_gnomad_nc_sv
     skip_clinvar_snv
     skip_gnomad_mt
-    skip_gnomad_nuclear_snv
-    skip_gnomad_nuclear_sv
-    val_clinvar_snv
-    val_gnomad_mt
-    val_gnomad_version_snv      
-    val_gnomad_version_sv      
+    skip_gnomad_nc_snv
+    skip_gnomad_nc_sv
 
     main:
 
     ch_versions           = channel.empty()
-    ch_clinvar_snv        = channel.empty()
-    ch_gnomad_mt          = channel.empty()
-    ch_gnomad_nuclear_snv = channel.empty()
-    ch_gnomad_nuclear_sv  = channel.empty()
+    ch_clinvar_snv_out    = channel.empty()
+    ch_gnomad_mt_snv_out  = channel.empty()
+    ch_gnomad_nc_snv_out  = channel.empty()
+    ch_gnomad_nc_sv_out   = channel.empty()
 
     if (!skip_clinvar_snv) {
-        ch_clinvar_snv        = DOWNLOADCLINVARSNV(val_clinvar_snv).vcf_tbi
-    }
-    if (!skip_gnomad_nuclear_snv) {
-        ch_gnomad_nuclear_snv = PREPARE_GNOMAD_SNV(val_gnomad_version_snv).gnomad_snv
-    }
-    if (!skip_gnomad_nuclear_sv) {
-        ch_gnomad_nuclear_sv  = PREPARE_GNOMAD_SV(val_gnomad_version_sv).gnomad_sv
+        ch_clinvar_snv_out   = PREPARE_CLINVAR_SNV(ch_clnvid_header, ch_clinvar_snv).clinvar_snv
     }
     if (!skip_gnomad_mt) {
-        ch_gnomad_mt          = DOWNLOADGNOMADMT(val_gnomad_mt).vcf_tbi
+        ch_gnomad_mt_snv_out = DOWNLOADGNOMADMT(ch_gnomad_mt_snv).vcf_tbi
+    }
+    if (!skip_gnomad_nc_snv) {
+        ch_gnomad_nc_snv_out = PREPARE_GNOMAD_SNV(ch_gnomad_nc_snv).gnomad_snv
+    }
+    if (!skip_gnomad_nc_sv) {
+        ch_gnomad_nc_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nc_sv).gnomad_sv
     }
     //
     // Collate and save software versions
@@ -83,10 +83,10 @@ workflow RAREDISEASEREFS {
 
 
     emit:
-    clinvar_snv        = ch_clinvar_snv
-    gnomad_mt          = ch_gnomad_mt
-    gnomad_nuclear_snv = ch_gnomad_nuclear_snv
-    gnomad_nuclear_sv  = ch_gnomad_nuclear_sv
+    clinvar_snv        = ch_clinvar_snv_out
+    gnomad_mt          = ch_gnomad_mt_snv_out
+    gnomad_nuclear_snv = ch_gnomad_nc_snv_out
+    gnomad_nuclear_sv  = ch_gnomad_nc_sv_out
     multiqc_report     = channel.empty()
     versions           = ch_versions                 // channel: [ path(versions.yml) ]
 

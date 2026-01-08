@@ -1,5 +1,5 @@
 process DOWNLOADGNOMADSNV {
-    tag "gnomad_snv"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
@@ -8,7 +8,7 @@ process DOWNLOADGNOMADSNV {
         'community.wave.seqera.io/library/bcftools_wget:3777c03593ee7853' }"
 
     input:
-    val(version)
+    val(meta)
 
     output:
     tuple val(meta), path("*bgz"), emit: bgz
@@ -17,18 +17,16 @@ process DOWNLOADGNOMADSNV {
     task.ext.when == null || task.ext.when
 
     script:
-    meta = [id: "${version}"]
     """
     for i in X Y; do
-        wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/vcf/genomes/gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz
+        wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chr\${i}.vcf.bgz
     done
     """
 
     stub:
-    meta = [id: "gnomad_${version}_snv"]
     """
     for i in {1..22} X Y; do
-        echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${version}/vcf/genomes/gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz >>commands
+        echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chr\${i}.vcf.bgz >>commands
         touch gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz
     done
     """

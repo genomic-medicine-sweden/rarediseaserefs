@@ -1,0 +1,1 @@
+##INFO=<ID=CLNVID,Number=1,Type=Integer,Description="ClinVar Variation ID">'

@@ -6,10 +6,10 @@ include { TABIX_BGZIPTABIX  } from '../../../modules/nf-core/tabix/bgziptabix/ma
 
 workflow PREPARE_GNOMAD_SNV {
     take:
-    val_gnomad_version_snv
+    ch_gnomad_nc_snv
 
     main:
-    DOWNLOADGNOMADSNV(val_gnomad_version_snv)
+    DOWNLOADGNOMADSNV(ch_gnomad_nc_snv)
 
     DOWNLOADGNOMADSNV.out.bgz
         .transpose()
@@ -25,11 +25,10 @@ workflow PREPARE_GNOMAD_SNV {
     BCFTOOLS_ANNOTATE.out.vcf
         .join(BCFTOOLS_ANNOTATE.out.tbi, failOnMismatch:true, failOnDuplicate:true)
         .map { meta, vcf, tbi ->
-            def new_meta = [id: meta.id]
+            def new_meta = meta - meta.subMap('chromosome')
             return [new_meta, vcf, tbi]
         }
         .groupTuple()
-        .dump (tag:'tamiol')
         .set{ ch_merge_in }
 
     BCFTOOLS_MERGE(ch_merge_in, [[:],[]], [[:],[]], [[:],[]])
@@ -45,7 +44,11 @@ workflow PREPARE_GNOMAD_SNV {
         [])
 
     TABIX_BGZIPTABIX(BCFTOOLS_QUERY.out.output)
+    
+    TABIX_BGZIPTABIX.out.gz_index
+        .join(ch_gnomad_snv_vcf)
+        .set {ch_gnomad_snv}
 
     emit:
-    gnomad_snv = TABIX_BGZIPTABIX.out.gz_index.join(ch_gnomad_snv_vcf)
+    gnomad_snv = ch_gnomad_snv
 }
