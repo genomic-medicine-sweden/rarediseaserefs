@@ -10,7 +10,7 @@ workflow PREPARE_GNOMAD_SV {
     DOWNLOADGNOMADSV(ch_gnomad_nc_sv)
 
     DOWNLOADGNOMADSV.out.vcf
-        .map {meta, vcf -> 
+        .map {meta, vcf ->
             def new_meta = [id: "gnomad_reformatted.v"+meta.version+".sv.sites"]
             return [new_meta, vcf, [], [], []]}
         .set {ch_annotate_in}

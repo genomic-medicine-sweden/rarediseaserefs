@@ -13,7 +13,7 @@ workflow PREPARE_GNOMAD_SNV {
 
     DOWNLOADGNOMADSNV.out.bgz
         .transpose()
-        .map {meta, vcf -> 
+        .map {meta, vcf ->
             def chr = vcf.getBaseName().tokenize('.')[-2]
             def new_meta = meta + [chromosome: chr]
             return [new_meta, vcf, [], [], []]
@@ -44,7 +44,7 @@ workflow PREPARE_GNOMAD_SNV {
         [])
 
     TABIX_BGZIPTABIX(BCFTOOLS_QUERY.out.output)
-    
+
     TABIX_BGZIPTABIX.out.gz_index
         .join(ch_gnomad_snv_vcf)
         .set {ch_gnomad_snv}
