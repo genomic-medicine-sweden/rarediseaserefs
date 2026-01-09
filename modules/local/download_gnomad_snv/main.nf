@@ -18,7 +18,7 @@ process DOWNLOADGNOMADSNV {
 
     script:
     """
-    for i in X Y; do
+    for i in {1..22} X Y; do
         wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chr\${i}.vcf.bgz
     done
     """
