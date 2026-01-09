@@ -3,15 +3,16 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
-include { PREPARE_CLINVAR_SNV    } from '../subworkflows/local/prepare_clinvar_snv'
-include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
-include { PREPARE_GNOMAD_SV      } from '../subworkflows/local/prepare_gnomad_sv'
+include { paramsSummaryMap         } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
+include { PREPARE_CLINVAR_SNV      } from '../subworkflows/local/prepare_clinvar_snv'
+include { PREPARE_GNOMAD_SNV       } from '../subworkflows/local/prepare_gnomad_snv'
+include { PREPARE_GNOMAD_SV        } from '../subworkflows/local/prepare_gnomad_sv'
 
-include { DOWNLOADGNOMADMT       } from '../modules/local/download_gnomad_mt'
+include { DOWNLOADCADDSCORES       } from '../modules/local/download_cadd_scores'
+include { DOWNLOADGNOMADMT         } from '../modules/local/download_gnomad_mt'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,10 +24,12 @@ workflow RAREDISEASEREFS {
 
     take:
     ch_clnvid_header
+    ch_cadd_score
     ch_clinvar_snv
     ch_gnomad_mt_snv
     ch_gnomad_nc_snv
     ch_gnomad_nc_sv
+    skip_cadd_score
     skip_clinvar_snv
     skip_gnomad_mt
     skip_gnomad_nc_snv
@@ -35,11 +38,15 @@ workflow RAREDISEASEREFS {
     main:
 
     ch_versions           = channel.empty()
+    ch_cadd_score_out     = channel.empty()
     ch_clinvar_snv_out    = channel.empty()
     ch_gnomad_mt_snv_out  = channel.empty()
     ch_gnomad_nc_snv_out  = channel.empty()
     ch_gnomad_nc_sv_out   = channel.empty()
 
+    if (!skip_cadd_score) {
+        ch_cadd_score_out    = DOWNLOADCADDSCORES(ch_cadd_score).tsv_tbi
+    }
     if (!skip_clinvar_snv) {
         ch_clinvar_snv_out   = PREPARE_CLINVAR_SNV(ch_clnvid_header, ch_clinvar_snv).clinvar_snv
     }
@@ -83,6 +90,7 @@ workflow RAREDISEASEREFS {
 
 
     emit:
+    cadd_scores        = ch_cadd_score_out
     clinvar_snv        = ch_clinvar_snv_out
     gnomad_mt          = ch_gnomad_mt_snv_out
     gnomad_nuclear_snv = ch_gnomad_nc_snv_out

@@ -78,6 +78,13 @@
             "fa_icon": "fas fa-user-cog",
             "description": "Options used to facilitate the annotation of the variants.",
             "properties": {
+                "cadd_scores_version": {
+                    "type": "string",
+                    "default": "1.7",
+                    "description": "Specify the version of the gnomAD database to download.",
+                    "enum": ["1.6", "1.7"],
+                    "fa_icon": "fas fa-align-center"
+                },
                 "clinvar_version_snv": {
                     "type": "string",
                     "default": "20260104",
@@ -111,7 +118,7 @@
                     "fa_icon": "fas fa-forward",
                     "description": "Disable specified downloads.",
                     "help_text": "Multiple downloads can be disabled, separated by commas.",
-                    "pattern": "^((clinvar_snv|gnomad_nuclear_snv|gnomad_nuclear_sv|gnomad_mt)?,?)*(?<!,)$"
+                    "pattern": "^((cadd_scores|clinvar_snv|gnomad_nuclear_snv|gnomad_nuclear_sv|gnomad_mt)?,?)*(?<!,)$"
                 }
             }
         },
