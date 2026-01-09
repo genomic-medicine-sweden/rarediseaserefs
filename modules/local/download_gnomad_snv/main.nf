@@ -27,7 +27,7 @@ process DOWNLOADGNOMADSNV {
     """
     for i in {1..22} X Y; do
         echo wget https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chr\${i}.vcf.bgz >>commands
-        touch gnomad.genomes.v${version}.sites.chr\${i}.vcf.bgz
+        touch gnomad.genomes.v${meta.version}.sites.chr\${i}.vcf.bgz
     done
     """
 }

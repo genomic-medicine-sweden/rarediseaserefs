@@ -24,10 +24,10 @@ process DOWNLOADGNOMADMT {
 
     stub:
     """
-    echo wget -O gnomad.genomes.v${version}.sites.chrM.vcf.gz https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chrM.vcf.bgz >>commands
-    echo wget -O gnomad.genomes.v${version}.sites.chrM.vcf.gz.tbi https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chrM.vcf.bgz.tbi >>commands
+    echo wget -O gnomad.genomes.v${meta.version}.sites.chrM.vcf.gz https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chrM.vcf.bgz >>commands
+    echo wget -O gnomad.genomes.v${meta.version}.sites.chrM.vcf.gz.tbi https://storage.googleapis.com/gcp-public-data--gnomad/release/${meta.version}/vcf/genomes/gnomad.genomes.v${meta.version}.sites.chrM.vcf.bgz.tbi >>commands
 
-    touch gnomad.genomes.v${version}.sites.chrM.vcf.gz
-    touch gnomad.genomes.v${version}.sites.chrM.vcf.gz.tbi
+    touch gnomad.genomes.v${meta.version}.sites.chrM.vcf.gz
+    touch gnomad.genomes.v${meta.version}.sites.chrM.vcf.gz.tbi
     """
 }
