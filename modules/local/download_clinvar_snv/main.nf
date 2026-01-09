@@ -27,7 +27,7 @@ process DOWNLOADCLINVARSNV {
     echo wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_${meta.version}.vcf.gz >>commands
     echo wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_${meta.version}.vcf.gz.tbi >>commands
     touch clinvar_reformatted_${meta.version}.vcf.gz
-    tocuh clinvar_reformatted_${meta.version}.vcf.gz.tbi
+    touch clinvar_reformatted_${meta.version}.vcf.gz.tbi
     """
 
 }
