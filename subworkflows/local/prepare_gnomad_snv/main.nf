@@ -1,6 +1,6 @@
 include { DOWNLOADGNOMADSNV } from '../../../modules/local/download_gnomad_snv'
 include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate'
-include { BCFTOOLS_MERGE    } from '../../../modules/nf-core/bcftools/merge'
+include { BCFTOOLS_CONCAT   } from '../../../modules/nf-core/bcftools/concat'
 include { BCFTOOLS_QUERY    } from '../../../modules/nf-core/bcftools/query/main'
 include { TABIX_BGZIPTABIX  } from '../../../modules/nf-core/tabix/bgziptabix/main'
 
@@ -29,12 +29,12 @@ workflow PREPARE_GNOMAD_SNV {
             return [new_meta, vcf, tbi]
         }
         .groupTuple()
-        .set{ ch_merge_in }
+        .set{ ch_concat_in }
 
-    BCFTOOLS_MERGE(ch_merge_in, [[:],[]], [[:],[]], [[:],[]])
+    BCFTOOLS_CONCAT(ch_concat_in)
 
-    BCFTOOLS_MERGE.out.vcf
-            .join(BCFTOOLS_MERGE.out.index, failOnMismatch:true, failOnDuplicate:true)
+    BCFTOOLS_CONCAT.out.vcf
+            .join(BCFTOOLS_CONCAT.out.tbi, failOnMismatch:true, failOnDuplicate:true)
             .set {ch_gnomad_snv_vcf}
 
     BCFTOOLS_QUERY(
