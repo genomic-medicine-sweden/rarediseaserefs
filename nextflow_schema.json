@@ -78,6 +78,13 @@
             "fa_icon": "fas fa-user-cog",
             "description": "Options used to facilitate the annotation of the variants.",
             "properties": {
+                "cadd_annotations_version": {
+                    "type": "string",
+                    "default": "1.7",
+                    "description": "Specify the version of the CADD annotations to download.",
+                    "enum": ["1.6", "1.7"],
+                    "fa_icon": "fas fa-align-center"
+                },
                 "cadd_mirror": {
                     "type": "string",
                     "default": "de",
@@ -125,7 +132,7 @@
                     "fa_icon": "fas fa-forward",
                     "description": "Disable specified downloads.",
                     "help_text": "Multiple downloads can be disabled, separated by commas.",
-                    "pattern": "^((cadd_scores|clinvar_snv|gnomad_nuclear_snv|gnomad_nuclear_sv|gnomad_mt)?,?)*(?<!,)$"
+                    "pattern": "^((cadd_annotations|cadd_scores|clinvar_snv|gnomad_nuclear_snv|gnomad_nuclear_sv|gnomad_mt)?,?)*(?<!,)$"
                 }
             }
         },
