@@ -17,17 +17,17 @@ process DOWNLOADCADDSCORES {
     task.ext.when == null || task.ext.when
 
     script:
+    def link = meta.mirror.equals("us") ? "https://krishna.gs.washington.edu/download/CADD/v${meta.version}/GRCh38/" : "https://kircherlab.bihealth.org/download/CADD/v${meta.version}/GRCh38/"
     """
-    wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz \\
-        https://krishna.gs.washington.edu/download/CADD/v${meta.version}/GRCh38/whole_genome_SNVs.tsv.gz
-    wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz.tbi \\
-        https://krishna.gs.washington.edu/download/CADD/v${meta.version}/GRCh38/whole_genome_SNVs.tsv.gz.tbi
+    wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz ${link}/whole_genome_SNVs.tsv.gz
+    wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz.tbi ${link}whole_genome_SNVs.tsv.gz.tbi
     """
 
     stub:
+    def link = meta.mirror.equals("us") ? "https://krishna.gs.washington.edu/download/CADD/v${meta.version}/GRCh38/" : "https://kircherlab.bihealth.org/download/CADD/v${meta.version}/GRCh38/"
     """
-    echo wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz https://kircherlab.bihealth.org/download/CADD/v${meta.version}/GRCh38/whole_genome_SNVs.tsv.gz >>commands
-    echo wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz.tbi https://kircherlab.bihealth.org/download/CADD/v${meta.version}/GRCh38/whole_genome_SNVs.tsv.gz.tbi >>commands
+    echo wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz ${link}/whole_genome_SNVs.tsv.gz >>commands
+    echo wget -c -O CADD_v${meta.version}_whole_genome_SNVs.tsv.gz.tbi ${link}/whole_genome_SNVs.tsv.gz.tbi >>commands
     
     touch CADD_v${meta.version}_whole_genome_SNVs.tsv.gz
     touch CADD_v${meta.version}_whole_genome_SNVs.tsv.gz.tbi
