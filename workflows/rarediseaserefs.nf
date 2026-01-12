@@ -49,7 +49,7 @@ workflow RAREDISEASEREFS {
     ch_gnomad_nc_sv_out     = channel.empty()
 
     if (!skip_cadd_annotations) {
-        ch_cadd_annotations_out = PREPARE_CADD_ANNOTATIONS(ch_cadd_annotations).untar
+        ch_cadd_annotations_out = PREPARE_CADD_ANNOTATIONS(ch_cadd_annotations).cadd_annotations
     }
     if (!skip_cadd_score) {
         ch_cadd_score_out       = DOWNLOADCADDSCORES(ch_cadd_score).tsv_tbi

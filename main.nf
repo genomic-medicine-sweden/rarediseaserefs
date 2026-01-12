@@ -145,7 +145,7 @@ workflow {
 
 output {
     cadd_annotations {
-        path 'cadd'
+        path 'cadd/data'
     }
     cadd_scores {
         path 'cadd'
