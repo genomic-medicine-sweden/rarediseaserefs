@@ -45,14 +45,18 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
-    ch_clnvid_header   = channel.fromPath("$projectDir/assets/clnvid_header.txt", checkIfExists: true).collect()
-    ch_clinvar_snv     = channel.of([
-                                [id:"clinvar_" + params.clinvar_version_snv + "_snv", version: params.clinvar_version_snv],
-                                "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_"+params.clinvar_version_snv+".vcf.gz"
-                            ])
-    ch_gnomad_nc_snv   = channel.of([id:"gnomad_" + params.gnomad_version_snv + "_snv", version: params.gnomad_version_snv])
-    ch_gnomad_nc_sv    = channel.of([id:"gnomad_" + params.gnomad_version_sv + "_sv", version: params.gnomad_version_sv])
-    ch_gnomad_mt_snv   = channel.of([id:"gnomad_" + params.gnomad_version_mt + "_mt", version: params.gnomad_version_mt])
+    ch_clnvid_header        = channel.fromPath("$projectDir/assets/clnvid_header.txt", checkIfExists: true).collect()
+    ch_clinvar_snv          = channel.of([
+                                    [id:"clinvar_${params.clinvar_version_snv}_snv", version: params.clinvar_version_snv],
+                                    "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_${params.clinvar_version_snv}.vcf.gz"
+                                ])
+    ch_gnomad_nuclear_snv   = channel.of(*1..22, 'X', 'Y')
+                                .map { chr -> 
+                                        def ver = params.gnomad_version_snv
+                                        return[[id:"gnomad_${ver}_snv", version: ver, chromosome: chr], "https://storage.googleapis.com/gcp-public-data--gnomad/release/${ver}/vcf/genomes/gnomad.genomes.v${ver}.sites.chr${chr}.vcf.bgz"]
+                                }
+    ch_gnomad_nuclear_sv    = channel.of([id:"gnomad_" + params.gnomad_version_sv + "_sv", version: params.gnomad_version_sv])
+    ch_gnomad_mt_snv        = channel.of([id:"gnomad_" + params.gnomad_version_mt + "_mt", version: params.gnomad_version_mt])
 
     skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
     skip_gnomad_mt     = parseSkipList(params.skip_downloads, 'gnomad_mt')
@@ -63,8 +67,8 @@ workflow NFCORE_RAREDISEASEREFS {
         ch_clnvid_header,
         ch_clinvar_snv,
         ch_gnomad_mt_snv,
-        ch_gnomad_nc_snv,
-        ch_gnomad_nc_sv,
+        ch_gnomad_nuclear_snv,
+        ch_gnomad_nuclear_sv,
         skip_clinvar_snv,
         skip_gnomad_mt,
         skip_gnomad_nc_snv,
