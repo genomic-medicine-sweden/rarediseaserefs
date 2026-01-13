@@ -24,8 +24,8 @@ workflow RAREDISEASEREFS {
     ch_clnvid_header
     ch_clinvar_snv
     ch_gnomad_mt_snv
-    ch_gnomad_nc_snv
-    ch_gnomad_nc_sv
+    ch_gnomad_nuclear_snv
+    ch_gnomad_nuclear_sv
     skip_clinvar_snv
     skip_gnomad_mt
     skip_gnomad_nc_snv
@@ -33,23 +33,23 @@ workflow RAREDISEASEREFS {
 
     main:
 
-    ch_versions           = channel.empty()
-    ch_clinvar_snv_out    = channel.empty()
-    ch_gnomad_mt_snv_out  = channel.empty()
-    ch_gnomad_nc_snv_out  = channel.empty()
-    ch_gnomad_nc_sv_out   = channel.empty()
+    ch_versions               = channel.empty()
+    ch_clinvar_snv_out        = channel.empty()
+    ch_gnomad_mt_snv_out      = channel.empty()
+    ch_gnomad_nuclear_snv_out = channel.empty()
+    ch_gnomad_nuclear_sv_out  = channel.empty()
 
     if (!skip_clinvar_snv) {
-        ch_clinvar_snv_out   = PREPARE_CLINVAR_SNV(ch_clnvid_header, ch_clinvar_snv).clinvar_snv
+        ch_clinvar_snv_out        = PREPARE_CLINVAR_SNV(ch_clnvid_header, ch_clinvar_snv).clinvar_snv
     }
     if (!skip_gnomad_mt) {
-        ch_gnomad_mt_snv_out = PREPARE_GNOMAD_MT(ch_gnomad_mt_snv).gnomad_mt
+        ch_gnomad_mt_snv_out      = PREPARE_GNOMAD_MT(ch_gnomad_mt_snv).gnomad_mt
     }
     if (!skip_gnomad_nc_snv) {
-        ch_gnomad_nc_snv_out = PREPARE_GNOMAD_SNV(ch_gnomad_nc_snv).gnomad_snv
+        ch_gnomad_nuclear_snv_out = PREPARE_GNOMAD_SNV(ch_gnomad_nuclear_snv).gnomad_snv
     }
     if (!skip_gnomad_nc_sv) {
-        ch_gnomad_nc_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nc_sv).gnomad_sv
+        ch_gnomad_nuclear_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nuclear_sv).gnomad_sv
     }
     //
     // Collate and save software versions
@@ -84,8 +84,8 @@ workflow RAREDISEASEREFS {
     emit:
     clinvar_snv        = ch_clinvar_snv_out
     gnomad_mt          = ch_gnomad_mt_snv_out
-    gnomad_nuclear_snv = ch_gnomad_nc_snv_out
-    gnomad_nuclear_sv  = ch_gnomad_nc_sv_out
+    gnomad_nuclear_snv = ch_gnomad_nuclear_snv_out
+    gnomad_nuclear_sv  = ch_gnomad_nuclear_sv_out
     multiqc_report     = channel.empty()
     versions           = ch_versions                 // channel: [ path(versions.yml) ]
 

@@ -6,10 +6,10 @@ include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_GNOMAD_SNV {
     take:
-    ch_gnomad_nc_snv
+    ch_gnomad_nuclear_snv
 
     main:
-    WGET(ch_gnomad_nc_snv)
+    WGET(ch_gnomad_nuclear_snv)
 
     WGET.out.outfile
         .map {meta, vcf ->

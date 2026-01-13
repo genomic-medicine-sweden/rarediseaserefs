@@ -3,11 +3,11 @@ include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_GNOMAD_SV {
     take:
-    ch_gnomad_nc_sv
+    ch_gnomad_nuclear_sv
 
     main:
 
-    WGET(ch_gnomad_nc_sv)
+    WGET(ch_gnomad_nuclear_sv)
 
     WGET.out.outfile
         .map {meta, vcf ->
