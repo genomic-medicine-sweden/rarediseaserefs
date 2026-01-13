@@ -60,7 +60,10 @@ workflow NFCORE_RAREDISEASEREFS {
                                     [id:"gnomad_" + params.gnomad_version_sv + "_sv", version: params.gnomad_version_sv],
                                     "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_version_sv}/genome_sv/gnomad.v${params.gnomad_version_sv}.sv.sites.vcf.gz"
                                 ])
-    ch_gnomad_mt_snv        = channel.of([id:"gnomad_" + params.gnomad_version_mt + "_mt", version: params.gnomad_version_mt])
+    ch_gnomad_mt_snv        = channel.of([
+                                    [id:"gnomad_" + params.gnomad_version_mt + "_mt", version: params.gnomad_version_mt],
+                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_version_mt}/vcf/genomes/gnomad.genomes.v${params.gnomad_version_mt}.sites.chrM.vcf.bgz"
+                                ])
 
     skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
     skip_gnomad_mt     = parseSkipList(params.skip_downloads, 'gnomad_mt')
