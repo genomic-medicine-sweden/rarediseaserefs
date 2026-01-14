@@ -2,7 +2,9 @@ repository_type: pipeline
 
 nf_core_version: 3.5.1
 
-lint: {}
+lint:
+  files_unchanged:
+    - assets/nf-core-rarediseaserefs_logo_light.png
 
 template:
   org: nf-core

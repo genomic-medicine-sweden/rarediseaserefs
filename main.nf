@@ -15,21 +15,16 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RAREDISEASEREFS  } from './workflows/rarediseaserefs'
+include { RAREDISEASEREFS         } from './workflows/rarediseaserefs'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
-
+include { parseSkipList           } from './subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     GENOME PARAMETER VALUES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,11 +45,51 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
+    ch_chrom_map            = channel.fromPath("$projectDir/assets/chrom_map.txt", checkIfExists: true).collect()
+    ch_clnvid_header        = channel.fromPath("$projectDir/assets/clnvid_header.txt", checkIfExists: true).collect()
+    ch_clinvar_snv          = channel.of([
+                                    [id:"clinvar_${params.clinvar_version_snv}_snv", version: params.clinvar_version_snv],
+                                    "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_${params.clinvar_version_snv}.vcf.gz"
+                                ])
+    ch_gnomad_nuclear_snv   = channel.of(*1..22, 'X', 'Y')
+                                .map { chr ->
+                                        def ver = params.gnomad_snv_version
+                                        return[[id:"gnomad_${ver}_snv", version: ver, chromosome: chr],
+                                        "https://storage.googleapis.com/gcp-public-data--gnomad/release/${ver}/vcf/genomes/gnomad.genomes.v${ver}.sites.chr${chr}.vcf.bgz"]
+                                }
+    ch_gnomad_nuclear_sv    = channel.of([
+                                    [id:"gnomad_" + params.gnomad_sv_version + "_sv", version: params.gnomad_sv_version],
+                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_sv_version}/genome_sv/gnomad.v${params.gnomad_sv_version}.sv.sites.vcf.gz"
+                                ])
+    ch_gnomad_mt_snv        = channel.of([
+                                    [id:"gnomad_" + params.gnomad_mt_version + "_mt", version: params.gnomad_mt_version],
+                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_mt_version}/vcf/genomes/gnomad.genomes.v${params.gnomad_mt_version}.sites.chrM.vcf.bgz"
+                                ])
+
+    skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
+    skip_gnomad_mt     = parseSkipList(params.skip_downloads, 'gnomad_mt')
+    skip_gnomad_nc_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
+    skip_gnomad_nc_sv  = parseSkipList(params.skip_downloads, 'gnomad_nuclear_sv')
+
     RAREDISEASEREFS (
-        samplesheet
+        ch_chrom_map,
+        ch_clnvid_header,
+        ch_clinvar_snv,
+        ch_gnomad_mt_snv,
+        ch_gnomad_nuclear_snv,
+        ch_gnomad_nuclear_sv,
+        skip_clinvar_snv,
+        skip_gnomad_mt,
+        skip_gnomad_nc_snv,
+        skip_gnomad_nc_sv
     )
+
     emit:
-    multiqc_report = RAREDISEASEREFS.out.multiqc_report // channel: /path/to/multiqc_report.html
+    clinvar_snv        = RAREDISEASEREFS.out.clinvar_snv
+    gnomad_mt          = RAREDISEASEREFS.out.gnomad_mt
+    gnomad_nuclear_snv = RAREDISEASEREFS.out.gnomad_nuclear_snv
+    gnomad_nuclear_sv  = RAREDISEASEREFS.out.gnomad_nuclear_sv
+    multiqc_report     = RAREDISEASEREFS.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,6 +133,12 @@ workflow {
         params.hook_url,
         NFCORE_RAREDISEASEREFS.out.multiqc_report
     )
+
+    publish:
+    clinvar_snv        = NFCORE_RAREDISEASEREFS.out.clinvar_snv
+    gnomad_mt          = NFCORE_RAREDISEASEREFS.out.gnomad_mt
+    gnomad_nuclear_snv = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_snv
+    gnomad_nuclear_sv  = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_sv
 }
 
 /*
@@ -105,3 +146,18 @@ workflow {
     THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+output {
+    clinvar_snv {
+        path 'clinvar'
+    }
+    gnomad_mt {
+        path 'gnomad'
+    }
+    gnomad_nuclear_snv {
+        path 'gnomad'
+    }
+    gnomad_nuclear_sv {
+        path 'gnomad'
+    }
+}
