@@ -5,8 +5,9 @@ include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_CLINVAR_SNV {
     take:
-    ch_clnvid_header
+    ch_chrom_map
     ch_clinvar_snv
+    ch_clnvid_header
 
     main:
     WGET(ch_clinvar_snv)
@@ -15,7 +16,7 @@ workflow PREPARE_CLINVAR_SNV {
         .map {meta, vcf -> return [meta, vcf, [], [], []]}
         .set {ch_annotate_in}
 
-    BCFTOOLS_ANNOTATE(ch_annotate_in, [], ch_clnvid_header, [])
+    BCFTOOLS_ANNOTATE(ch_annotate_in, [], ch_clnvid_header, ch_chrom_map)
 
     GAWK(BCFTOOLS_ANNOTATE.out.vcf, [], false)
 

@@ -45,6 +45,7 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
+    ch_chrom_map            = channel.fromPath("$projectDir/assets/chrom_map.txt", checkIfExists: true).collect()
     ch_clnvid_header        = channel.fromPath("$projectDir/assets/clnvid_header.txt", checkIfExists: true).collect()
     ch_clinvar_snv          = channel.of([
                                     [id:"clinvar_${params.clinvar_version_snv}_snv", version: params.clinvar_version_snv],
@@ -71,6 +72,7 @@ workflow NFCORE_RAREDISEASEREFS {
     skip_gnomad_nc_sv  = parseSkipList(params.skip_downloads, 'gnomad_nuclear_sv')
 
     RAREDISEASEREFS (
+        ch_chrom_map,
         ch_clnvid_header,
         ch_clinvar_snv,
         ch_gnomad_mt_snv,
