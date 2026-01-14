@@ -85,21 +85,27 @@
                     "help_text": "You can find available versions of the ClinVar database at https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/. Use the date string as the version (e.g., 20260104).",
                     "fa_icon": "fas fa-align-center"
                 },
-                "gnomad_version_mt": {
+                "gnomad_mt_version": {
                     "type": "string",
                     "default": "3.1",
                     "description": "Specify the version of the gnomAD database to download.",
                     "enum": ["3.1"],
                     "fa_icon": "fas fa-align-center"
                 },
-                "gnomad_version_snv": {
+                "gnomad_snv_forks": {
+                    "type": "integer",
+                    "default": 4,
+                    "description": "gnomAD data for individual chromosomes are downloaded separately. This parameter controls how many chromosomes are downloaded simultaneously.",
+                    "fa_icon": "fas fa-less-than"
+                },
+                "gnomad_snv_version": {
                     "type": "string",
                     "default": "4.1",
                     "description": "Specify the version of the gnomAD database to download.",
                     "enum": ["4.0", "4.1"],
                     "fa_icon": "fas fa-align-center"
                 },
-                "gnomad_version_sv": {
+                "gnomad_sv_version": {
                     "type": "string",
                     "default": "4.1",
                     "description": "Specify the version of the gnomAD database to download.",

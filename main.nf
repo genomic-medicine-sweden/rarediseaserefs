@@ -52,17 +52,17 @@ workflow NFCORE_RAREDISEASEREFS {
                                 ])
     ch_gnomad_nuclear_snv   = channel.of(*1..22, 'X', 'Y')
                                 .map { chr -> 
-                                        def ver = params.gnomad_version_snv
+                                        def ver = params.gnomad_snv_version
                                         return[[id:"gnomad_${ver}_snv", version: ver, chromosome: chr], 
                                         "https://storage.googleapis.com/gcp-public-data--gnomad/release/${ver}/vcf/genomes/gnomad.genomes.v${ver}.sites.chr${chr}.vcf.bgz"]
                                 }
     ch_gnomad_nuclear_sv    = channel.of([
-                                    [id:"gnomad_" + params.gnomad_version_sv + "_sv", version: params.gnomad_version_sv],
-                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_version_sv}/genome_sv/gnomad.v${params.gnomad_version_sv}.sv.sites.vcf.gz"
+                                    [id:"gnomad_" + params.gnomad_sv_version + "_sv", version: params.gnomad_sv_version],
+                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_sv_version}/genome_sv/gnomad.v${params.gnomad_sv_version}.sv.sites.vcf.gz"
                                 ])
     ch_gnomad_mt_snv        = channel.of([
-                                    [id:"gnomad_" + params.gnomad_version_mt + "_mt", version: params.gnomad_version_mt],
-                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_version_mt}/vcf/genomes/gnomad.genomes.v${params.gnomad_version_mt}.sites.chrM.vcf.bgz"
+                                    [id:"gnomad_" + params.gnomad_mt_version + "_mt", version: params.gnomad_mt_version],
+                                    "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_mt_version}/vcf/genomes/gnomad.genomes.v${params.gnomad_mt_version}.sites.chrM.vcf.bgz"
                                 ])
 
     skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
