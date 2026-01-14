@@ -51,9 +51,9 @@ workflow NFCORE_RAREDISEASEREFS {
                                     "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/weekly/clinvar_${params.clinvar_version_snv}.vcf.gz"
                                 ])
     ch_gnomad_nuclear_snv   = channel.of(*1..22, 'X', 'Y')
-                                .map { chr -> 
+                                .map { chr ->
                                         def ver = params.gnomad_snv_version
-                                        return[[id:"gnomad_${ver}_snv", version: ver, chromosome: chr], 
+                                        return[[id:"gnomad_${ver}_snv", version: ver, chromosome: chr],
                                         "https://storage.googleapis.com/gcp-public-data--gnomad/release/${ver}/vcf/genomes/gnomad.genomes.v${ver}.sites.chr${chr}.vcf.bgz"]
                                 }
     ch_gnomad_nuclear_sv    = channel.of([
