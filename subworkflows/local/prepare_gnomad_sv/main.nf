@@ -1,4 +1,5 @@
 include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate'
+include { BCFTOOLS_VIEW     } from '../../../modules/nf-core/bcftools/view'
 include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_GNOMAD_SV {
@@ -10,6 +11,13 @@ workflow PREPARE_GNOMAD_SV {
     WGET(ch_gnomad_nuclear_sv)
 
     WGET.out.outfile
+        .map {meta, vcf ->
+            return [meta, vcf, []]}
+        .set {ch_view_in}
+
+    BCFTOOLS_VIEW(ch_view_in, [], [], [])
+
+    BCFTOOLS_VIEW.out.vcf
         .map {meta, vcf ->
             return [meta, vcf, [], [], []]}
         .set {ch_annotate_in}
