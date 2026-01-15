@@ -1,22 +1,19 @@
-include { DOWNLOADGNOMADSNV } from '../../../modules/local/download_gnomad_snv'
 include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate'
 include { BCFTOOLS_CONCAT   } from '../../../modules/nf-core/bcftools/concat'
 include { BCFTOOLS_QUERY    } from '../../../modules/nf-core/bcftools/query/main'
 include { TABIX_BGZIPTABIX  } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_GNOMAD_SNV {
     take:
-    ch_gnomad_nc_snv
+    ch_gnomad_nuclear_snv
 
     main:
-    DOWNLOADGNOMADSNV(ch_gnomad_nc_snv)
+    WGET(ch_gnomad_nuclear_snv)
 
-    DOWNLOADGNOMADSNV.out.bgz
-        .transpose()
+    WGET.out.outfile
         .map {meta, vcf ->
-            def chr = vcf.getBaseName().tokenize('.')[-2]
-            def new_meta = meta + [chromosome: chr]
-            return [new_meta, vcf, [], [], []]
+            return [meta, vcf, [], [], []]
         }
         .set {ch_annotate_in}
 

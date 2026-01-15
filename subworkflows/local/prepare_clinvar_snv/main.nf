@@ -1,21 +1,22 @@
-include { DOWNLOADCLINVARSNV } from '../../../modules/local/download_clinvar_snv'
-include { BCFTOOLS_ANNOTATE  } from '../../../modules/nf-core/bcftools/annotate'
-include { GAWK               } from '../../../modules/nf-core/gawk'
+include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate'
+include { GAWK              } from '../../../modules/nf-core/gawk'
 include { TABIX_BGZIPTABIX  } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_CLINVAR_SNV {
     take:
-    ch_clnvid_header
+    ch_chrom_map
     ch_clinvar_snv
+    ch_clnvid_header
 
     main:
-    DOWNLOADCLINVARSNV(ch_clinvar_snv)
+    WGET(ch_clinvar_snv)
 
-    DOWNLOADCLINVARSNV.out.vcf_tbi
-        .map {meta, vcf, tbi -> return [meta, vcf, tbi, [], []]}
+    WGET.out.outfile
+        .map {meta, vcf -> return [meta, vcf, [], [], []]}
         .set {ch_annotate_in}
 
-    BCFTOOLS_ANNOTATE(ch_annotate_in, [], ch_clnvid_header, [])
+    BCFTOOLS_ANNOTATE(ch_annotate_in, [], ch_clnvid_header, ch_chrom_map)
 
     GAWK(BCFTOOLS_ANNOTATE.out.vcf, [], false)
 

@@ -1,18 +1,25 @@
-include { DOWNLOADGNOMADSV  } from '../../../modules/local/download_gnomad_sv'
 include { BCFTOOLS_ANNOTATE } from '../../../modules/nf-core/bcftools/annotate'
+include { BCFTOOLS_VIEW     } from '../../../modules/nf-core/bcftools/view'
+include { WGET              } from '../../../modules/nf-core/wget'
 
 workflow PREPARE_GNOMAD_SV {
     take:
-    ch_gnomad_nc_sv
+    ch_gnomad_nuclear_sv
 
     main:
 
-    DOWNLOADGNOMADSV(ch_gnomad_nc_sv)
+    WGET(ch_gnomad_nuclear_sv)
 
-    DOWNLOADGNOMADSV.out.vcf
+    WGET.out.outfile
         .map {meta, vcf ->
-            def new_meta = [id: "gnomad_reformatted.v"+meta.version+".sv.sites"]
-            return [new_meta, vcf, [], [], []]}
+            return [meta, vcf, []]}
+        .set {ch_view_in}
+
+    BCFTOOLS_VIEW(ch_view_in, [], [], [])
+
+    BCFTOOLS_VIEW.out.vcf
+        .map {meta, vcf ->
+            return [meta, vcf, [], [], []]}
         .set {ch_annotate_in}
 
     BCFTOOLS_ANNOTATE(ch_annotate_in, [], [], [])
