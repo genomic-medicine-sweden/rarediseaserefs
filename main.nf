@@ -45,6 +45,20 @@ workflow NFCORE_RAREDISEASEREFS {
     //
     // WORKFLOW: Run pipeline
     //
+    if (params.cadd_mirror.equals("us")) {
+        cadd_link           = "https://krishna.gs.washington.edu/download/CADD/v${params.cadd_version}/GRCh38"
+    } else {
+        cadd_link           = "https://kircherlab.bihealth.org/download/CADD/v${params.cadd_version}/GRCh38"
+    }
+
+    ch_cadd_annotations     = channel.of([
+                                    [id:"cadd_" + params.cadd_version, version:params.cadd_version],
+                                    cadd_link + "/GRCh38_v${params.cadd_version}.tar.gz"
+                                    ])
+    ch_cadd_scores          = channel.of([
+                                    [id:"cadd_" + params.cadd_version, version:params.cadd_version],
+                                    cadd_link + "/whole_genome_SNVs.tsv.gz"
+                                    ])
     ch_chrom_map            = channel.fromPath("$projectDir/assets/chrom_map.txt", checkIfExists: true).collect()
     ch_clnvid_header        = channel.fromPath("$projectDir/assets/clnvid_header.txt", checkIfExists: true).collect()
     ch_clinvar_snv          = channel.of([
@@ -66,25 +80,33 @@ workflow NFCORE_RAREDISEASEREFS {
                                     "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_mt_version}/vcf/genomes/gnomad.genomes.v${params.gnomad_mt_version}.sites.chrM.vcf.bgz"
                                 ])
 
-    skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
-    skip_gnomad_mt     = parseSkipList(params.skip_downloads, 'gnomad_mt')
-    skip_gnomad_nc_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
-    skip_gnomad_nc_sv  = parseSkipList(params.skip_downloads, 'gnomad_nuclear_sv')
+    skip_cadd_annotations   = parseSkipList(params.skip_downloads, 'cadd_annotations')
+    skip_cadd_scores        = parseSkipList(params.skip_downloads, 'cadd_scores')
+    skip_clinvar_snv        = parseSkipList(params.skip_downloads, 'clinvar_snv')
+    skip_gnomad_mt          = parseSkipList(params.skip_downloads, 'gnomad_mt')
+    skip_gnomad_nuclear_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
+    skip_gnomad_nuclear_sv  = parseSkipList(params.skip_downloads, 'gnomad_nuclear_sv')
 
     RAREDISEASEREFS (
         ch_chrom_map,
         ch_clnvid_header,
+        ch_cadd_annotations,
+        ch_cadd_scores,
         ch_clinvar_snv,
         ch_gnomad_mt_snv,
         ch_gnomad_nuclear_snv,
         ch_gnomad_nuclear_sv,
+        skip_cadd_annotations,
+        skip_cadd_scores,
         skip_clinvar_snv,
         skip_gnomad_mt,
-        skip_gnomad_nc_snv,
-        skip_gnomad_nc_sv
+        skip_gnomad_nuclear_snv,
+        skip_gnomad_nuclear_sv
     )
 
     emit:
+    cadd_annotations   = RAREDISEASEREFS.out.cadd_annotations
+    cadd_scores        = RAREDISEASEREFS.out.cadd_scores
     clinvar_snv        = RAREDISEASEREFS.out.clinvar_snv
     gnomad_mt          = RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = RAREDISEASEREFS.out.gnomad_nuclear_snv
@@ -135,6 +157,8 @@ workflow {
     )
 
     publish:
+    cadd_annotations   = NFCORE_RAREDISEASEREFS.out.cadd_annotations
+    cadd_scores        = NFCORE_RAREDISEASEREFS.out.cadd_scores
     clinvar_snv        = NFCORE_RAREDISEASEREFS.out.clinvar_snv
     gnomad_mt          = NFCORE_RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_snv
@@ -148,6 +172,12 @@ workflow {
 */
 
 output {
+    cadd_annotations {
+        path 'cadd/data'
+    }
+    cadd_scores {
+        path 'cadd'
+    }
     clinvar_snv {
         path 'clinvar'
     }

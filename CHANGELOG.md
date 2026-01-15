@@ -9,6 +9,8 @@ Initial release of genomic-medicine-sweden/rarediseaserefs, created with the [nf
 
 ### `Added`
 
+[#4](https://github.com/genomic-medicine-sweden/rarediseaserefs/pull/4) Feature to download CADD scores
+[#4](https://github.com/genomic-medicine-sweden/rarediseaserefs/pull/4) Feature to download CADD annotations
 [#1](https://github.com/genomic-medicine-sweden/rarediseaserefs/pull/1) Feature to download gnomAD nuclear SNVs
 [#1](https://github.com/genomic-medicine-sweden/rarediseaserefs/pull/1) Feature to download gnomAD nuclear SVs
 [#1](https://github.com/genomic-medicine-sweden/rarediseaserefs/pull/1) Feature to download gnomAD mitochondrial SNVs
