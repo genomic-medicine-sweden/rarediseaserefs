@@ -52,7 +52,7 @@ workflow RAREDISEASEREFS {
         ch_cadd_annotations_out   = PREPARE_CADD_ANNOTATIONS(ch_cadd_annotations).cadd_annotations
     }
     if (!skip_cadd_score) {
-        ch_cadd_score_out         = DOWNLOADCADDSCORES(ch_cadd_score).tsv_tbi
+        ch_cadd_score_out         = PREPARE_CADD_SCORES(ch_cadd_score).cadd_scores
     }
     if (!skip_clinvar_snv) {
         ch_clinvar_snv_out        = PREPARE_CLINVAR_SNV(ch_chrom_map, ch_clinvar_snv, ch_clnvid_header).clinvar_snv
