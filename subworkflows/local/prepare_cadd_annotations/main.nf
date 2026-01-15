@@ -1,14 +1,14 @@
-include { DOWNLOADCADDANNOTATIONS } from '../../../modules/local/download_cadd_annotations'
-include { UNTAR                   } from '../../../modules/nf-core/untar'
+include { WGET  } from '../../../modules/nf-core/wget'
+include { UNTAR } from '../../../modules/nf-core/untar'
 
 workflow PREPARE_CADD_ANNOTATIONS {
     take:
     ch_cadd_annotations
 
     main:
-    DOWNLOADCADDANNOTATIONS(ch_cadd_annotations)
+    WGET(ch_cadd_annotations)
 
-    UNTAR(DOWNLOADCADDANNOTATIONS.out.targz)
+    UNTAR(WGET.out.outfile)
 
     emit:
     cadd_annotations = UNTAR.out.untar

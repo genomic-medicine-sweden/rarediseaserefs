@@ -3,15 +3,16 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
+include { paramsSummaryMap         } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText   } from '../subworkflows/local/utils_nfcore_rarediseaserefs_pipeline'
 include { PREPARE_CADD_ANNOTATIONS } from '../subworkflows/local/prepare_cadd_annotations'
-include { PREPARE_CLINVAR_SNV    } from '../subworkflows/local/prepare_clinvar_snv'
-include { PREPARE_GNOMAD_MT      } from '../subworkflows/local/prepare_gnomad_mt'
-include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
-include { PREPARE_GNOMAD_SV      } from '../subworkflows/local/prepare_gnomad_sv'
+include { PREPARE_CADD_SCORES      } from '../subworkflows/local/prepare_cadd_scores'
+include { PREPARE_CLINVAR_SNV      } from '../subworkflows/local/prepare_clinvar_snv'
+include { PREPARE_GNOMAD_MT        } from '../subworkflows/local/prepare_gnomad_mt'
+include { PREPARE_GNOMAD_SNV       } from '../subworkflows/local/prepare_gnomad_snv'
+include { PREPARE_GNOMAD_SV        } from '../subworkflows/local/prepare_gnomad_sv'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,24 +35,24 @@ workflow RAREDISEASEREFS {
     skip_cadd_score
     skip_clinvar_snv
     skip_gnomad_mt
-    skip_gnomad_nc_snv
-    skip_gnomad_nc_sv
+    skip_gnomad_nuclear_snv
+    skip_gnomad_nuclear_sv
 
     main:
 
     ch_versions               = channel.empty()
-    ch_cadd_annotations_out = channel.empty()
-    ch_cadd_score_out       = channel.empty()
+    ch_cadd_annotations_out   = channel.empty()
+    ch_cadd_score_out         = channel.empty()
     ch_clinvar_snv_out        = channel.empty()
     ch_gnomad_mt_snv_out      = channel.empty()
     ch_gnomad_nuclear_snv_out = channel.empty()
     ch_gnomad_nuclear_sv_out  = channel.empty()
 
     if (!skip_cadd_annotations) {
-        ch_cadd_annotations_out = PREPARE_CADD_ANNOTATIONS(ch_cadd_annotations).cadd_annotations
+        ch_cadd_annotations_out   = PREPARE_CADD_ANNOTATIONS(ch_cadd_annotations).cadd_annotations
     }
     if (!skip_cadd_score) {
-        ch_cadd_score_out       = DOWNLOADCADDSCORES(ch_cadd_score).tsv_tbi
+        ch_cadd_score_out         = DOWNLOADCADDSCORES(ch_cadd_score).tsv_tbi
     }
     if (!skip_clinvar_snv) {
         ch_clinvar_snv_out        = PREPARE_CLINVAR_SNV(ch_chrom_map, ch_clinvar_snv, ch_clnvid_header).clinvar_snv
@@ -59,10 +60,10 @@ workflow RAREDISEASEREFS {
     if (!skip_gnomad_mt) {
         ch_gnomad_mt_snv_out      = PREPARE_GNOMAD_MT(ch_gnomad_mt_snv).gnomad_mt
     }
-    if (!skip_gnomad_nc_snv) {
+    if (!skip_gnomad_nuclear_snv) {
         ch_gnomad_nuclear_snv_out = PREPARE_GNOMAD_SNV(ch_gnomad_nuclear_snv).gnomad_snv
     }
-    if (!skip_gnomad_nc_sv) {
+    if (!skip_gnomad_nuclear_sv) {
         ch_gnomad_nuclear_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nuclear_sv).gnomad_sv
     }
     //

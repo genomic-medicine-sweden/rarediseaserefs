@@ -78,13 +78,6 @@
             "fa_icon": "fas fa-user-cog",
             "description": "Options used to facilitate the annotation of the variants.",
             "properties": {
-                "cadd_annotations_version": {
-                    "type": "string",
-                    "default": "1.7",
-                    "description": "Specify the version of the CADD annotations to download.",
-                    "enum": ["1.6", "1.7"],
-                    "fa_icon": "fas fa-align-center"
-                },
                 "cadd_mirror": {
                     "type": "string",
                     "default": "de",
@@ -92,10 +85,10 @@
                     "enum": ["us", "de"],
                     "fa_icon": "fas fa-align-center"
                 },
-                "cadd_scores_version": {
+                "cadd_version": {
                     "type": "string",
                     "default": "1.7",
-                    "description": "Specify the version of the CADD scores to download.",
+                    "description": "Specify the version of the CADD scores and/or annotations to download.",
                     "enum": ["1.6", "1.7"],
                     "fa_icon": "fas fa-align-center"
                 },
