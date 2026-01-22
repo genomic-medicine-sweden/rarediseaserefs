@@ -56,7 +56,7 @@ workflow RAREDISEASEREFS {
         ch_gnomad_nuclear_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nuclear_sv).gnomad_sv
     }
 
-        dbnsfp_link_out           = PREPARE_DBNSFP_LINK(ch_dbnsfp_link).dbnsfp_link_downloaded
+        ch_dbnsfp_link_out           = PREPARE_DBNSFP_LINK(ch_dbnsfp_link).dbnsfp_link_downloaded
     //
     // Collate and save software versions
     //
@@ -92,7 +92,7 @@ workflow RAREDISEASEREFS {
     gnomad_mt          = ch_gnomad_mt_snv_out
     gnomad_nuclear_snv = ch_gnomad_nuclear_snv_out
     gnomad_nuclear_sv  = ch_gnomad_nuclear_sv_out
-    dbnsfp_link        = dbnsfp_link_out
+    dbnsfp_link        = ch_dbnsfp_link_out
     multiqc_report     = channel.empty()
     versions           = ch_versions                 // channel: [ path(versions.yml) ]
 
