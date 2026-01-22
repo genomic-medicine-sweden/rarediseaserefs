@@ -112,6 +112,11 @@
                     "enum": ["4.0", "4.1"],
                     "fa_icon": "fas fa-align-center"
                 },
+                "dbnsfp_link": {
+                    "type": "string",
+                    "description": "Provide the dbNSFP download link. The links are provided upon registration to the database. For more information see: https://www.dbnsfp.org/download",
+                    "fa_icon": "fas fa-align-center"
+                },
                 "skip_downloads": {
                     "type": "string",
                     "fa_icon": "fas fa-forward",
