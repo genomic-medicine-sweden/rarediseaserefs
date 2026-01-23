@@ -56,7 +56,7 @@ workflow RAREDISEASEREFS {
         ch_gnomad_nuclear_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nuclear_sv).gnomad_sv
     }
 
-        ch_dbnsfp_link_out           = PREPARE_DBNSFP_LINK(ch_dbnsfp_link).dbnsfp_link_downloaded
+        ch_dbnsfp_link_out           = PREPARE_DBNSFP_LINK(ch_dbnsfp_link).dbsnfp_link_index
     //
     // Collate and save software versions
     //
