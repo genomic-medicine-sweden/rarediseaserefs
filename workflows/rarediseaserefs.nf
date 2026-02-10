@@ -11,7 +11,7 @@ include { PREPARE_CLINVAR_SNV    } from '../subworkflows/local/prepare_clinvar_s
 include { PREPARE_GNOMAD_MT      } from '../subworkflows/local/prepare_gnomad_mt'
 include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
 include { PREPARE_GNOMAD_SV      } from '../subworkflows/local/prepare_gnomad_sv'
-include {PREPARE_DBNSFP_LINK    } from '../subworkflows/local/prepare_dbnsfp_link'
+include { PREPARE_DBNSFP_LINK    } from '../subworkflows/local/prepare_dbnsfp_link'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
