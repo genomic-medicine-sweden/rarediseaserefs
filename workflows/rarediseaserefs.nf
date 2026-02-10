@@ -11,6 +11,7 @@ include { PREPARE_CLINVAR_SNV    } from '../subworkflows/local/prepare_clinvar_s
 include { PREPARE_GNOMAD_MT      } from '../subworkflows/local/prepare_gnomad_mt'
 include { PREPARE_GNOMAD_SNV     } from '../subworkflows/local/prepare_gnomad_snv'
 include { PREPARE_GNOMAD_SV      } from '../subworkflows/local/prepare_gnomad_sv'
+include { WGET                   } from '../../../modules/nf-core/wget'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,6 +28,7 @@ workflow RAREDISEASEREFS {
     ch_gnomad_mt_snv
     ch_gnomad_nuclear_snv
     ch_gnomad_nuclear_sv
+    ch_expansionhunter_vc
     skip_clinvar_snv
     skip_gnomad_mt
     skip_gnomad_nc_snv
@@ -39,6 +41,7 @@ workflow RAREDISEASEREFS {
     ch_gnomad_mt_snv_out      = channel.empty()
     ch_gnomad_nuclear_snv_out = channel.empty()
     ch_gnomad_nuclear_sv_out  = channel.empty()
+    ch_expansionhunter_vc_out = channel.empty()
 
     if (!skip_clinvar_snv) {
         ch_clinvar_snv_out        = PREPARE_CLINVAR_SNV(ch_chrom_map, ch_clinvar_snv, ch_clnvid_header).clinvar_snv
@@ -52,6 +55,8 @@ workflow RAREDISEASEREFS {
     if (!skip_gnomad_nc_sv) {
         ch_gnomad_nuclear_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nuclear_sv).gnomad_sv
     }
+        ch_expansionhunter_vc_out = WGET(ch_expansionhunter_vc).out.outfile
+    
     //
     // Collate and save software versions
     //
@@ -87,6 +92,7 @@ workflow RAREDISEASEREFS {
     gnomad_mt          = ch_gnomad_mt_snv_out
     gnomad_nuclear_snv = ch_gnomad_nuclear_snv_out
     gnomad_nuclear_sv  = ch_gnomad_nuclear_sv_out
+    expansionhunter_vc = ch_expansionhunter_vc_out
     multiqc_report     = channel.empty()
     versions           = ch_versions                 // channel: [ path(versions.yml) ]
 
