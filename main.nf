@@ -68,7 +68,7 @@ workflow NFCORE_RAREDISEASEREFS {
 
     ch_expansionhunter_vc   = channel.of([[id:'expansionhunter_vc_json'], params.expansionhunter_vc_json
     
-                                ]).dump( tag: 'ch_expansionhunter_vc_dump')
+                                ])
     
     skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
     skip_gnomad_mt     = parseSkipList(params.skip_downloads, 'gnomad_mt')
