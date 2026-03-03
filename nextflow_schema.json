@@ -112,6 +112,11 @@
                     "enum": ["4.0", "4.1"],
                     "fa_icon": "fas fa-align-center"
                 },
+                "expansionhunter_vc_json": {
+                    "type": "string",
+                    "description": "Provide the Expansionhunter variant catalog to use in json format",
+                    "fa_icon": "fas fa-align-center"
+                },
                 "skip_downloads": {
                     "type": "string",
                     "fa_icon": "fas fa-forward",
