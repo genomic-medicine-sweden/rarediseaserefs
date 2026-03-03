@@ -66,6 +66,10 @@ workflow NFCORE_RAREDISEASEREFS {
                                     "https://storage.googleapis.com/gcp-public-data--gnomad/release/${params.gnomad_mt_version}/vcf/genomes/gnomad.genomes.v${params.gnomad_mt_version}.sites.chrM.vcf.bgz"
                                 ])
 
+    ch_expansionhunter_vc   = channel.of([[id:'expansionhunter_vc_json'], params.expansionhunter_vc_json
+
+                                ])
+
     skip_clinvar_snv   = parseSkipList(params.skip_downloads, 'clinvar_snv')
     skip_gnomad_mt     = parseSkipList(params.skip_downloads, 'gnomad_mt')
     skip_gnomad_nc_snv = parseSkipList(params.skip_downloads, 'gnomad_nuclear_snv')
@@ -78,6 +82,7 @@ workflow NFCORE_RAREDISEASEREFS {
         ch_gnomad_mt_snv,
         ch_gnomad_nuclear_snv,
         ch_gnomad_nuclear_sv,
+        ch_expansionhunter_vc,
         skip_clinvar_snv,
         skip_gnomad_mt,
         skip_gnomad_nc_snv,
@@ -89,6 +94,7 @@ workflow NFCORE_RAREDISEASEREFS {
     gnomad_mt          = RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = RAREDISEASEREFS.out.gnomad_nuclear_snv
     gnomad_nuclear_sv  = RAREDISEASEREFS.out.gnomad_nuclear_sv
+    expansionhunter_vc = RAREDISEASEREFS.out.expansionhunter_vc
     multiqc_report     = RAREDISEASEREFS.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
@@ -139,6 +145,7 @@ workflow {
     gnomad_mt          = NFCORE_RAREDISEASEREFS.out.gnomad_mt
     gnomad_nuclear_snv = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_snv
     gnomad_nuclear_sv  = NFCORE_RAREDISEASEREFS.out.gnomad_nuclear_sv
+    expansionhunter_vc = NFCORE_RAREDISEASEREFS.out.expansionhunter_vc
 }
 
 /*
@@ -160,4 +167,9 @@ output {
     gnomad_nuclear_sv {
         path 'gnomad'
     }
+    expansionhunter_vc {
+        path 'expansionhunter_vc_json'
+
+    }
+
 }
