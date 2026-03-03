@@ -56,7 +56,7 @@ workflow RAREDISEASEREFS {
         ch_gnomad_nuclear_sv_out  = PREPARE_GNOMAD_SV(ch_gnomad_nuclear_sv).gnomad_sv
     }
         ch_expansionhunter_vc_out = WGET(ch_expansionhunter_vc).out.outfile
-    
+
     //
     // Collate and save software versions
     //
